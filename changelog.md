@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.1 (01/20/2022)
+
+- Fixed barcode proccessing fallback
+
+---
+
 ## Version 0.3.0 (01/20/2022)
 
 - If no barcode data was found, copy just barcode

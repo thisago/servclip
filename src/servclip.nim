@@ -20,25 +20,31 @@ routes:
       echo fmt"Edited clipboard to `{text}`"
       resp text
   get "/set/barcode/@code":
-    var barcode: int64 = -1
+    var
+      code = @"code"
+      barcode: int64 = -1
+      error = ""
     try:
-      barcode = parseInt @"code"
+      barcode = parseInt code
     except ValueError:
-      resp "Error: barcode is not a integer"
-    if barcode != -1:
-      var data: Product
-      try:
-        data = await getProduct barcode
-      except: discard
-      if data.name.len > 0:
-        let text = fmt"{barcode},{data.name}"
-        if not cb.clipboard_set_text cstring text:
-          resp "Cannot set clipboard text"
+      error = "Barcode is not a integer"
+    block:
+      if barcode != -1:
+        var data: Product
+        try:
+          data = await getProduct barcode
+        except: discard
+        if data.name.len > 0:
+          let text = fmt"{barcode},{data.name}"
+          if not cb.clipboard_set_text cstring text:
+            error = "Cannot set clipboard text"
+          else:
+            echo fmt"Edited clipboard to `{text}`"
+            resp $barcode
+          break
         else:
-          echo fmt"Edited clipboard to `{text}`"
-          resp $barcode
-      else:
-        if not cb.clipboard_set_text cstring $barcode:
-          resp "Cannot set clipboard text"
-        else:
-          resp "Cannot get barcode data"
+          error = "Cannot get barcode data"
+    if not cb.clipboard_set_text cstring code:
+      resp "Cannot set clipboard text"
+    else:
+      resp error
