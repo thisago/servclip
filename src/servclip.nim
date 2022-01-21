@@ -37,7 +37,7 @@ routes:
         if data.name.len > 0:
           let text = fmt"{barcode},{data.name}"
           if not cb.clipboard_set_text cstring text:
-            error = "Cannot set clipboard text"
+            error = "Cannot put barcode data in clipboard"
           else:
             echo fmt"Edited clipboard to `{text}`"
             resp $barcode
@@ -45,6 +45,6 @@ routes:
         else:
           error = "Cannot get barcode data"
     if not cb.clipboard_set_text cstring code:
-      resp "Cannot set clipboard text"
+      resp "Cannot put barcode in clipboard"
     else:
       resp error
