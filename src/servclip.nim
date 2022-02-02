@@ -1,6 +1,7 @@
 import std/asyncdispatch
 from std/strformat import fmt
 from std/strutils import parseInt
+from std/uri import decodeUrl
 
 import pkg/jester
 from pkg/nimclipboard/libclipboard import clipboard_new, clipboard_text,
@@ -13,7 +14,7 @@ routes:
   get "/get":
     resp $cb.clipboard_text
   get "/set/text/@text":
-    let text = @"text"
+    let text = decodeUrl @"text"
     if not cb.clipboard_set_text cstring text:
       resp "Cannot set clipboard text"
     else:

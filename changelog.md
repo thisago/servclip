@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.2 (01/20/2022)
+
+- Decoded the text content of `GET /set/text/{text}`
+
+---
+
 ## Version 0.3.1 (01/20/2022)
 
 - Fixed barcode proccessing fallback
