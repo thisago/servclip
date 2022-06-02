@@ -1,7 +1,7 @@
 # Package
 
 version       = "0.3.2"
-author        = "Luciano Lorenzo"
+author        = "Thiago Navarro"
 description   = "Manage your clipboard remotely"
 license       = "MIT"
 srcDir        = "src"
