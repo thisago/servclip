@@ -4,18 +4,30 @@ from std/strutils import parseInt
 from std/uri import decodeUrl
 
 import pkg/jester
-from pkg/nimclipboard/libclipboard import clipboard_new, clipboard_text,
-                                          clipboard_set_text
+when defined unix:
+  from pkg/nimclipboard/libclipboard import clipboard_new, clipboard_text,
+                                            clipboard_set_text
+elif defined windows:
+  import pkg/cliptomania except set_text
 from pkg/bluesoftcosmos import Product, getProduct
 
-var cb = clipboard_new(nil)
+when defined unix:
+  var clip = clipboard_new(nil)
+  template get_text(x: untyped): string =
+    $x.clipboard_text
+  template set_text(x: untyped; s: string): bool =
+    x.clipboard_set_text cstring s
+else:
+  template set_text(x: untyped; s: string): bool =
+    cliptomania.set_text(x, s)
+    true
 
 routes:
   get "/get":
-    resp $cb.clipboard_text
+    resp clip.get_text
   get "/set/text/@text":
     let text = decodeUrl @"text"
-    if not cb.clipboard_set_text cstring text:
+    if not clip.set_text text:
       resp "Cannot set clipboard text"
     else:
       echo fmt"Edited clipboard to `{text}`"
@@ -37,7 +49,7 @@ routes:
         except: discard
         if data.name.len > 0:
           let text = fmt"{barcode},{data.name}"
-          if not cb.clipboard_set_text cstring text:
+          if not clip.set_text text:
             error = "Cannot put barcode data in clipboard"
           else:
             echo fmt"Edited clipboard to `{text}`"
@@ -45,7 +57,7 @@ routes:
           break
         else:
           error = "Cannot get barcode data"
-    if not cb.clipboard_set_text cstring code:
+    if not clip.set_text code:
       resp "Cannot put barcode in clipboard"
     else:
       resp error
